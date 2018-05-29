@@ -8,7 +8,7 @@ Requires smlib and tf2attributes
 sm_attribute - change attributes of client's active weapon  
 sm_getweapon - displays client active weapon name and entity#
 
-How:
+How:  
 /attribute playerName attribute# floatvalue
 /getweapon playerName
 
