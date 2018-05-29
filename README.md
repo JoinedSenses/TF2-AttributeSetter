@@ -4,7 +4,7 @@ This plugin was created for development and testing
 
 Requires smlib and tf2attributes
 
-##Commands:
+## Commands:
 sm_attribute - change attributes of client's active weapon
 sm_getweapon - displays client active weapon name and entity#
 
