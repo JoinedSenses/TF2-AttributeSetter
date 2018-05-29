@@ -9,7 +9,7 @@ sm_attribute - change attributes of client's active weapon
 sm_getweapon - displays client active weapon name and entity#
 
 How:  
-/attribute playerName attribute# floatvalue
+/attribute playerName attribute# floatvalue  
 /getweapon playerName
 
 List of attributes:  
