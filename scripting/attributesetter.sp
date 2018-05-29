@@ -2,8 +2,7 @@
 #include <smlib>
 #include <tf2attributes>
 
-public Plugin myinfo = 
-{
+public Plugin myinfo = {
 	name = "Attribute Setter", 
 	author = "JoinedSenses", 
 	description = "Attribute Setter", 
