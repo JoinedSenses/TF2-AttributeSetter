@@ -7,7 +7,7 @@ public Plugin myinfo = {
 	author = "JoinedSenses", 
 	description = "Attribute Setter", 
 	version = "1.0.0", 
-	url = ""
+	url = "https://github.com/JoinedSenses"
 };
 public void OnPluginStart(){
 	RegAdminCmd("sm_attribute", cmdAttribute, ADMFLAG_ROOT);
