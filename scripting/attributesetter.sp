@@ -28,12 +28,12 @@ public Action cmdAttribute(int client, int args){
 		return Plugin_Handled;
 	}
 	int iArg2 = StringToInt(arg2);
-	if (iArg2 == 0){
+	if (iArg2 < 1){
 		ReplyToCommand(client, "Second argument must be an integer greater than 0");
 		return Plugin_Handled;
 	}
 	float fArg3 = StringToFloat(arg3);
-	if (fArg3 == 0.0){
+	if (fArg3 <= 0.0){
 		ReplyToCommand(client, "Third argument must be a float greater than 0.0");
 		return Plugin_Handled;
 	}
