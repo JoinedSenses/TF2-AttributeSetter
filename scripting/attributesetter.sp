@@ -43,7 +43,7 @@ public Action cmdAttribute(int client, int args){
 	char target_name[MAX_NAME_LENGTH];
 	GetClientName(target, target_name, sizeof(target_name));
 	TF2Attrib_SetByDefIndex(iWeapon, iArg2, fArg3);
-	ReplyToCommand(client, "Changed attribute %i of %s's %s to %f", iArg2, target_name, sWeapon, fArg3);
+	ReplyToCommand(client, "Changed attribute %i of %s's %s to %0.3f", iArg2, target_name, sWeapon, fArg3);
 	return Plugin_Handled;
 }
 	
