@@ -1,6 +1,7 @@
 #include <sourcemod>
 #include <smlib>
 #include <tf2attributes>
+#include <tf2_stocks>
 
 public Plugin myinfo = {
 	name = "Attribute Setter", 
@@ -11,6 +12,7 @@ public Plugin myinfo = {
 };
 public void OnPluginStart(){
 	RegAdminCmd("sm_attribute", cmdAttribute, ADMFLAG_ROOT);
+	RegAdminCmd("sm_resetattributes", cmdReset, ADMFLAG_ROOT);
 	RegAdminCmd("sm_getweapon", cmdWeaponEnt, ADMFLAG_ROOT);
 }
 public Action cmdAttribute(int client, int args){
@@ -46,7 +48,33 @@ public Action cmdAttribute(int client, int args){
 	ReplyToCommand(client, "Changed attribute %i of %s's %s to %0.3f", iArg2, target_name, sWeapon, fArg3);
 	return Plugin_Handled;
 }
-	
+public Action cmdReset(int client, int args){
+	if (args < 1){
+		TF2_RemoveAllWeapons(client);
+		TF2_RegeneratePlayer(client);
+		ReplyToCommand(client, "Reset attributes of your weapons");
+		return Plugin_Handled;
+	}
+	char arg1[MAX_NAME_LENGTH];
+	GetCmdArg(1, arg1, sizeof(arg1));
+	int target = FindTarget2(client, arg1, true, false);
+	if (target < 0){
+		ReplyToCommand(client, "Could not find target");
+		return Plugin_Handled;
+	}
+	TF2_RemoveAllWeapons(target);
+	TF2_RegeneratePlayer(target);
+	if (client == target){
+		TF2_RemoveAllWeapons(client);
+		TF2_RegeneratePlayer(client);
+		ReplyToCommand(client, "Reset attributes of your weapons");
+		return Plugin_Handled;
+	}
+	char target_name[MAX_NAME_LENGTH];
+	GetClientName(target, target_name, sizeof(target_name));
+	ReplyToCommand(client, "Reset attributes of  %s's weapons", target_name);
+	return Plugin_Handled;
+}
 public Action cmdWeaponEnt(int client, int args){
 	if (args < 1){
 		ReplyToCommand(client, "Need client name");
@@ -54,7 +82,7 @@ public Action cmdWeaponEnt(int client, int args){
 	}
 	char arg1[MAX_NAME_LENGTH];
 	GetCmdArg(1, arg1, sizeof(arg1));
-	new target = FindTarget2(client, arg1, true, false);
+	int target = FindTarget2(client, arg1, true, false);
 	if (target < 0){
 		ReplyToCommand(client, "Could not find target");
 		return Plugin_Handled;
@@ -81,7 +109,6 @@ stock FindTarget2(client, const String:target[], bool:nobots = false, bool:immun
 	}
 	else{
 		if (target_count == 0) { return -1; }
-		ReplyToCommand(client, "\x01[\x03JA\x01] %t", "No matching client");
 		return -1;
 	}
 }
