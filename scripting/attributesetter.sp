@@ -33,8 +33,8 @@ public Action cmdAttribute(int client, int args){
 		return Plugin_Handled;
 	}
 	float fArg3 = StringToFloat(arg3);
-	if (fArg3 <= 0.0){
-		ReplyToCommand(client, "Third argument must be a float greater than 0.0");
+	if (fArg3 < 0){
+		ReplyToCommand(client, "Third argument must be a float value greater than or equal to 0.0");
 		return Plugin_Handled;
 	}
 	int iWeapon = Client_GetActiveWeapon(target);
