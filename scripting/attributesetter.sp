@@ -7,7 +7,7 @@ public Plugin myinfo = {
 	name = "Attribute Setter", 
 	author = "JoinedSenses", 
 	description = "Attribute Setter", 
-	version = "1.0.0", 
+	version = "1.1.0", 
 	url = "https://github.com/JoinedSenses"
 };
 public void OnPluginStart(){
