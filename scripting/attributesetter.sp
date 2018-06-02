@@ -2,6 +2,7 @@
 #include <smlib>
 #include <tf2attributes>
 #include <tf2_stocks>
+#pragma newdecls required
 
 public Plugin myinfo = {
 	name = "Attribute Setter", 
@@ -94,19 +95,18 @@ public Action cmdWeaponEnt(int client, int args){
 	return Plugin_Handled;
 }
 
-stock FindTarget2(client, const String:target[], bool:nobots = false, bool:immunity = true){
-	decl String:target_name[MAX_TARGET_LENGTH];
-	decl target_list[1], target_count, bool:tn_is_ml;
-	new flags = COMMAND_FILTER_NO_MULTI;
-	if (nobots){
+stock int FindTarget2(int client, const char[] target, bool nobots = false, bool immunity = true){
+	char target_name[MAX_TARGET_LENGTH];
+	int target_list[1], target_count;
+	bool tn_is_ml;
+
+	int flags = COMMAND_FILTER_NO_MULTI;
+	if (nobots)
 		flags |= COMMAND_FILTER_NO_BOTS;
-	}
-	if (!immunity){
+	if (!immunity)
 		flags |= COMMAND_FILTER_NO_IMMUNITY;
-	}
-	if ((target_count = ProcessTargetString(target, client, target_list, 1, flags, target_name, sizeof(target_name), tn_is_ml)) > 0){
+	if ((target_count = ProcessTargetString(target, client,target_list,1,flags,target_name,sizeof(target_name),tn_is_ml)) > 0)
 		return target_list[0];
-	}
 	else{
 		if (target_count == 0) { return -1; }
 		return -1;
