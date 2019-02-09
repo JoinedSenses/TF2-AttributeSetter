@@ -1,5 +1,5 @@
 #include <sourcemod>
-#include <smlib>
+#include "smlib/clients.inc"
 #include <tf2attributes>
 #include <tf2_stocks>
 #pragma newdecls required
