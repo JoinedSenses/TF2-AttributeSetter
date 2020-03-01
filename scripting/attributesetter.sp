@@ -2,17 +2,22 @@
 #include "smlib/clients.inc"
 #include <tf2attributes>
 #include <tf2_stocks>
+
+#define PLUGIN_VERSION "1.1.1"
+#define PLUGIN_DESCRIPTION "Allows modifying weapon attributes with a command"
 #pragma newdecls required
 
 public Plugin myinfo = {
 	name = "Attribute Setter", 
 	author = "JoinedSenses", 
-	description = "Attribute Setter", 
-	version = "1.1.1", 
+	description = PLUGIN_DESCRIPTION, 
+	version = PLUGIN_VERSION, 
 	url = "https://github.com/JoinedSenses"
 };
 
 public void OnPluginStart() {
+	CreateConVar("sm_attributesetter_version", PLUGIN_VERSION, PLUGIN_DESCRIPTION, FCVAR_SPONLY|FCVAR_NOTIFY|FCVAR_DONTRECORD).SetString(PLUGIN_VERSION);
+	
 	RegAdminCmd("sm_attribute", cmdAttribute, ADMFLAG_ROOT);
 	RegAdminCmd("sm_resetattributes", cmdReset, ADMFLAG_ROOT);
 	RegAdminCmd("sm_getweapon", cmdWeaponEnt, ADMFLAG_ROOT);
