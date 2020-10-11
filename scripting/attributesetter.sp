@@ -1,11 +1,12 @@
+#pragma newdecls required
+
 #include <sourcemod>
-#include "smlib/clients.inc"
 #include <tf2attributes>
 #include <tf2_stocks>
 
-#define PLUGIN_VERSION "1.1.1"
+#define PLUGIN_VERSION "1.1.2"
 #define PLUGIN_DESCRIPTION "Allows modifying weapon attributes with a command"
-#pragma newdecls required
+
 
 public Plugin myinfo = {
 	name = "Attribute Setter", 
@@ -16,11 +17,18 @@ public Plugin myinfo = {
 };
 
 public void OnPluginStart() {
-	CreateConVar("sm_attributesetter_version", PLUGIN_VERSION, PLUGIN_DESCRIPTION, FCVAR_SPONLY|FCVAR_NOTIFY|FCVAR_DONTRECORD).SetString(PLUGIN_VERSION);
+	CreateConVar(
+		"sm_attributesetter_version",
+		PLUGIN_VERSION,
+		PLUGIN_DESCRIPTION,
+		FCVAR_SPONLY|FCVAR_NOTIFY|FCVAR_DONTRECORD\
+	).SetString(PLUGIN_VERSION);
 	
 	RegAdminCmd("sm_attribute", cmdAttribute, ADMFLAG_ROOT);
 	RegAdminCmd("sm_resetattributes", cmdReset, ADMFLAG_ROOT);
 	RegAdminCmd("sm_getweapon", cmdWeaponEnt, ADMFLAG_ROOT);
+
+	LoadTranslations("common.phrases");
 }
 
 public Action cmdAttribute(int client, int args) {
@@ -34,37 +42,44 @@ public Action cmdAttribute(int client, int args) {
 	char arg3[16];
 
 	GetCmdArg(1, arg1, sizeof(arg1));
-	GetCmdArg(2, arg2, sizeof(arg2));
-	GetCmdArg(3, arg3, sizeof(arg3));
 
 	int target = FindTarget(client, arg1, true, false);
-	if (target < 0) {
+	if (target == -1) {
 		return Plugin_Handled;
 	}
 
+	GetCmdArg(2, arg2, sizeof(arg2));
 	int iArg2 = StringToInt(arg2);
+
 	if (iArg2 < 1) {
 		ReplyToCommand(client, "Second argument must be an integer greater than 0");
 		return Plugin_Handled;
 	}
 
+	GetCmdArg(3, arg3, sizeof(arg3));
 	float fArg3 = StringToFloat(arg3);
+
 	if (fArg3 < 0) {
 		ReplyToCommand(client, "Third argument must be a float value greater than or equal to 0.0");
 		return Plugin_Handled;
 	}
 
-	int iWeapon = Client_GetActiveWeapon(target);
+	int weapon = GetActiveWeapon(target);
+	if (weapon == -1) {
+		ReplyToCommand(client, "%N has no active weapon", target);
+		return Plugin_Handled;
+	}
 
-	char sWeapon[32];
-	Client_GetActiveWeaponName(target, sWeapon, sizeof(sWeapon));
+	char classname[32];
+	GetEntityClassname(weapon, classname, sizeof classname);
 
 	char target_name[MAX_NAME_LENGTH];
 	GetClientName(target, target_name, sizeof(target_name));
 
-	TF2Attrib_SetByDefIndex(iWeapon, iArg2, fArg3);
+	TF2Attrib_SetByDefIndex(weapon, iArg2, fArg3);
 
-	ReplyToCommand(client, "Changed attribute %i of %s's %s to %0.3f", iArg2, target_name, sWeapon, fArg3);
+	ReplyToCommand(client, "Changed attribute %i of %s's %s to %0.3f", iArg2, target_name, classname, fArg3);
+
 	return Plugin_Handled;
 }
 
@@ -80,7 +95,7 @@ public Action cmdReset(int client, int args) {
 	GetCmdArg(1, arg1, sizeof(arg1));
 
 	int target = FindTarget(client, arg1, true, false);
-	if (target < 0) {
+	if (target == -1) {
 		return Plugin_Handled;
 	}
 
@@ -111,15 +126,24 @@ public Action cmdWeaponEnt(int client, int args) {
 	GetCmdArg(1, arg1, sizeof(arg1));
 
 	int target = FindTarget(client, arg1, true, false);
-	if (target < 0) {
+	if (target == -1) {
 		return Plugin_Handled;
 	}
 
-	int iWeapon = Client_GetActiveWeapon(target);
+	int weapon = GetActiveWeapon(target);
+	if (weapon == -1) {
+		ReplyToCommand(client, "%N has no active weapon", target);
+		return Plugin_Handled;
+	}
 
-	char sWeapon[32];
-	Client_GetActiveWeaponName(target, sWeapon, sizeof(sWeapon));
+	char classname[32];
+	GetEntityClassname(weapon, classname, sizeof classname);
 
-	ReplyToCommand(client, "Player weapon is %s %i", sWeapon, iWeapon);
+	ReplyToCommand(client, "Player weapon is %s %i", classname, weapon);
+
 	return Plugin_Handled;
+}
+
+int GetActiveWeapon(int client) {
+	return GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon");
 }
