@@ -33,14 +33,11 @@ public void OnPluginStart() {
 
 public Action cmdAttribute(int client, int args) {
 	if (args < 3 ) {
-		ReplyToCommand(client, "Requires three arguments");
+		ReplyToCommand(client, "Usage: sm_attribute <\"playername\"> <attribute> <value>");
 		return Plugin_Handled;
 	}
 
 	char arg1[MAX_NAME_LENGTH];
-	char arg2[16];
-	char arg3[16];
-
 	GetCmdArg(1, arg1, sizeof(arg1));
 
 	int target = FindTarget(client, arg1, true, false);
@@ -48,23 +45,23 @@ public Action cmdAttribute(int client, int args) {
 		return Plugin_Handled;
 	}
 
+	char arg2[16];
 	GetCmdArg(2, arg2, sizeof(arg2));
-	int iArg2 = StringToInt(arg2);
-
-	if (iArg2 < 1) {
+	int attribute = StringToInt(arg2);
+	if (attribute < 1) {
 		ReplyToCommand(client, "Second argument must be an integer greater than 0");
 		return Plugin_Handled;
 	}
 
+	char arg3[16];
 	GetCmdArg(3, arg3, sizeof(arg3));
-	float fArg3 = StringToFloat(arg3);
-
-	if (fArg3 < 0) {
+	float value = StringToFloat(arg3);
+	if (value < 0) {
 		ReplyToCommand(client, "Third argument must be a float value greater than or equal to 0.0");
 		return Plugin_Handled;
 	}
 
-	int weapon = GetActiveWeapon(target);
+	int weapon = GetEntPropEnt(target, Prop_Data, "m_hActiveWeapon");
 	if (weapon == -1) {
 		ReplyToCommand(client, "%N has no active weapon", target);
 		return Plugin_Handled;
@@ -76,9 +73,9 @@ public Action cmdAttribute(int client, int args) {
 	char target_name[MAX_NAME_LENGTH];
 	GetClientName(target, target_name, sizeof(target_name));
 
-	TF2Attrib_SetByDefIndex(weapon, iArg2, fArg3);
+	TF2Attrib_SetByDefIndex(weapon, attribute, value);
 
-	ReplyToCommand(client, "Changed attribute %i of %s's %s to %0.3f", iArg2, target_name, classname, fArg3);
+	ReplyToCommand(client, "Changed attribute %i of %s's %s to %0.3f", attribute, target_name, classname, value);
 
 	return Plugin_Handled;
 }
@@ -130,7 +127,7 @@ public Action cmdWeaponEnt(int client, int args) {
 		return Plugin_Handled;
 	}
 
-	int weapon = GetActiveWeapon(target);
+	int weapon = GetEntPropEnt(target, Prop_Data, "m_hActiveWeapon")
 	if (weapon == -1) {
 		ReplyToCommand(client, "%N has no active weapon", target);
 		return Plugin_Handled;
@@ -142,8 +139,4 @@ public Action cmdWeaponEnt(int client, int args) {
 	ReplyToCommand(client, "Player weapon is %s %i", classname, weapon);
 
 	return Plugin_Handled;
-}
-
-int GetActiveWeapon(int client) {
-	return GetEntPropEnt(client, Prop_Data, "m_hActiveWeapon");
 }
