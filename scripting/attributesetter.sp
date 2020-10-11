@@ -70,12 +70,9 @@ public Action cmdAttribute(int client, int args) {
 	char classname[32];
 	GetEntityClassname(weapon, classname, sizeof classname);
 
-	char target_name[MAX_NAME_LENGTH];
-	GetClientName(target, target_name, sizeof(target_name));
-
 	TF2Attrib_SetByDefIndex(weapon, attribute, value);
 
-	ReplyToCommand(client, "Changed attribute %i of %s's %s to %0.3f", attribute, target_name, classname, value);
+	ReplyToCommand(client, "Changed attribute %i of %N's %s to %0.3f", attribute, target, classname, value);
 
 	return Plugin_Handled;
 }
@@ -100,22 +97,18 @@ public Action cmdReset(int client, int args) {
 	TF2_RegeneratePlayer(target);
 
 	if (client == target) {
-		TF2_RemoveAllWeapons(client);
-		TF2_RegeneratePlayer(client);
 		ReplyToCommand(client, "Reset attributes of your weapons");
-		return Plugin_Handled;
+	}
+	else {
+		ReplyToCommand(client, "Reset attributes of  %N's weapons", target);
 	}
 
-	char target_name[MAX_NAME_LENGTH];
-	GetClientName(target, target_name, sizeof(target_name));
-
-	ReplyToCommand(client, "Reset attributes of  %s's weapons", target_name);
 	return Plugin_Handled;
 }
 
 public Action cmdWeaponEnt(int client, int args) {
 	if (args < 1) {
-		ReplyToCommand(client, "Need client name");
+		ReplyToCommand(client, "Usage: sm_getweapon <\"playername\">");
 		return Plugin_Handled;
 	}
 
